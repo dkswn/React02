@@ -1,0 +1,31 @@
+html {
+  max-width:1200px;
+
+
+
+
+}
+.blackNav {
+  background-color: black;
+  width: 100rem;
+  display:flex;
+  color:white;
+  padding:20px;
+  font-width:600;
+  font-size:20px;
+  box-sizing: border-box;
+}
+.grayHeader {
+  background-color: lightslategray;
+  width:100rem;
+  height:5rem;
+  display: flex;
+   justify-content: center;
+  text-align: center;
+
+}
+.InputText {
+  border-radius: 15px;
+  justify-content: center;
+  text-align: center;
+}
