@@ -1,60 +1,66 @@
 import './App.css';
-import React, { useState } from "react";
-import TodoTemplate from "./Component/TodoTemplate";
+import React, { useRef, useState } from "react";
+
 
 const App = () => {
-  const [todos, setTodos] = useState([{ id: 0, title: "", body: "" }]);
+  const inputRef = useRef(null);
+  const [todos, setTodos] = useState([
+    { id: 1, title: "", body: "", isDone: false },
+  ]);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
 
+  // 제목 입력란 값 변경 핸들러
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
   }
 
+  // 내용 입력란 값 변경 핸들러
   const handleBodyChange = (event) => {
     setBody(event.target.value);
   }
 
+  // 할 일 추가 버튼 클릭 핸들러
   const handleAddTodo = (event) => {
-    if (title.trim() === '' || body.trim() === '') {
-      return; // 빈 제목 또는 내용일 경우 추가하지 않음
-    }
     const newTodo = {
       id: todos.length + 1,
       title,
       body,
-    };
-
-    setTodos([...todos, newTodo]);
+      isDone: false,
+    }
+    if (title === "") {
+      alert("내용을 입력하세요!!");
+    event.preventDefault();
+    } else {
+      const updatedTodos = [...todos, newTodo].sort((a, b) => b.id - a.id);
+      setTodos(updatedTodos);
+      event.preventDefault();
+      setTitle("");
+      setBody("");
+      inputRef.current.focus();
+    }
   };
-        // 삭제하기
-  const deleteTodosHandler = (id) => {
-    const newTodosList = todos.filter((todo) => todo.id !== id);
-    setTodos(newTodosList);
+
+  // 할 일 삭제 핸들러
+  const deleteTodoHandler = (id) => {
+    const updatedTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(updatedTodos);
   };
 
-  const renderTodoList = () => {
-    return todos.map((item) => (
-      <div key={item.id} className="CreateComment">
-        <p id="first">{item.title}</p>
-        <p id="second">{item.body}</p>
-        <button onClick={() => deleteTodosHandler(item.id)}>
-          삭제하기
-        </button>
-      </div>
+  // 할 일 완료 버튼 클릭 핸들러
+  const handleCompleteBtn = (item) => {
+    const updatedTodos = todos.map((todo) => (
+      todo.id === item.id ? { ...todo, isDone: true } : todo
     ));
+    setTodos(updatedTodos);
   };
 
-  const renderTodoList2 = () => {
-    return todos.map((item) => (
-      <div key={item.id} className="CreateComment">
-        <p id="first">{item.title}</p>
-        <p id="second">{item.body}</p>
-        <button onClick={() => deleteTodosHandler(item.id)}>
-          삭제하기
-        </button>
-      </div>
+  // 할 일 취소 버튼 클릭 핸들러
+  const cancelHandleBtn = (item) => {
+    const updatedTodos = todos.map((todo) => (
+      todo.id === item.id ? { ...todo, isDone: false } : todo
     ));
+    setTodos(updatedTodos);
   };
   return (
     <div>
@@ -67,7 +73,8 @@ const App = () => {
             <span className="titleInputClass">
               제목: &nbsp;
               <input
-                value={title}
+                value={title} type="input"
+                ref={inputRef}
                 onChange={handleTitleChange}
                 placeholder="제목을 입력하세요"
               />
@@ -75,7 +82,7 @@ const App = () => {
             <span className="CommentInputClass">
               내용:&nbsp;
               <input
-                value={body}
+                value={body} type="input"
                 onChange={handleBodyChange}
                 placeholder="내용을 입력하세요"
               />
@@ -85,15 +92,54 @@ const App = () => {
         </div>
       </div>
       <div className="WorkingLineClass">
-        Working...!
+        Working...🔥
       </div>
-      {renderTodoList()}
+     {todos.map((item) => {
+  if (!item.isDone) {
+    return (
+      <div key={item.id} className="CreateComment">
+        <div>
+          <h2>{item.title}</h2>
+          <p>{item.body}</p>
+        </div>
+        <div className="ContainerInnerBtn">
+          <button
+            onClick={() => deleteTodoHandler(item.id)}
+            className="deleteButton">
+            삭제
+          </button>
+          <button onClick={() => handleCompleteBtn(item)} className="completeButton">
+            완료
+          </button>
+        </div>
+      </div>
+    )
+  }
+  return null; // 완료된 항목은 렌더링하지 않음
+})}
+
       <div className="WorkingLineClass">
-        Done...!
+        Done...🔥
       </div>
-      {renderTodoList2()}
+      {todos.map((item) => {
+        return item.isDone ? (
+          <div key={item.id} className="CreateComment">
+            <div>
+              <h2>{item.title}</h2> {/* 제목 표시 */}
+              <p>{item.body}</p> {/* 내용 표시 */}
+            </div>
+            <div>
+              <button onClick={() => deleteTodoHandler(item.id)} className="deleteButton">
+                삭제
+              </button>
+              <button onClick={() => cancelHandleBtn(item)} className="cancelButton">
+                돌아가기
+              </button>
+            </div>
+          </div>
+        ) : null;
+      })}
     </div>
   );
-};
-
+}
 export default App;
