@@ -1,3 +1,5 @@
+![스크린샷 2023-11-06 204739](https://github.com/dkswn/React02/assets/117058056/cb8ff562-d37b-4b68-80b9-83dea6dc702a)
+
 ## TodoList 만들어보기 개인미니프로젝트
 
 ### 1. **JSX 문법**이란 무엇일까요?
